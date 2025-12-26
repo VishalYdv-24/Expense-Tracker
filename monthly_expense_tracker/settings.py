@@ -26,6 +26,10 @@ SECRET_KEY = 'django-insecure-f*di5m9zfb&+w_l%u6@iqpv3d_9w+38ss9f3-u_o!87vbdxv#l
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://expense-tracker-2-rl2u.onrender.com",
+]
+
 
 
 # Application definition
