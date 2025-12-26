@@ -1,0 +1,193 @@
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>My Saving | Home</title>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow p-10">
+
+        <div class="w-[100%] bg-red-200 text-center text-5xl mb-10 rounded-lg p-2 font-bold">
+            <h1>My Saving</h1>
+        </div>
+
+        <!-- MONTH & YEAR FILTER -->
+        <form method="GET" class="flex flex-wrap items-center gap-4 mb-8">
+
+            <select name="month" class="border px-4 py-2 rounded-md">
+                <option value="1"  {% if selected_month == 1 %}selected{% endif %}>January</option>
+                <option value="2"  {% if selected_month == 2 %}selected{% endif %}>February</option>
+                <option value="3"  {% if selected_month == 3 %}selected{% endif %}>March</option>
+                <option value="4"  {% if selected_month == 4 %}selected{% endif %}>April</option>
+                <option value="5"  {% if selected_month == 5 %}selected{% endif %}>May</option>
+                <option value="6"  {% if selected_month == 6 %}selected{% endif %}>June</option>
+                <option value="7"  {% if selected_month == 7 %}selected{% endif %}>July</option>
+                <option value="8"  {% if selected_month == 8 %}selected{% endif %}>August</option>
+                <option value="9"  {% if selected_month == 9 %}selected{% endif %}>September</option>
+                <option value="10" {% if selected_month == 10 %}selected{% endif %}>October</option>
+                <option value="11" {% if selected_month == 11 %}selected{% endif %}>November</option>
+                <option value="12" {% if selected_month == 12 %}selected{% endif %}>December</option>
+            </select>
+
+            <select name="year" class="border px-4 py-2 rounded-md">
+                {% for y in years %}
+                    <option value="{{ y }}" {% if selected_year == y %}selected{% endif %}>
+                        {{ y }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit"
+                class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md font-semibold">
+                Apply
+            </button>
+        </form>
+
+        <!-- SUMMARY SECTION -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+
+            <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-red-500">
+                <h3 class="text-gray-500 text-sm">Total Expense</h3>
+                <p class="text-2xl font-bold text-red-600">₹{{ total_expense }}</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                <h3 class="text-gray-500 text-sm">Total Income</h3>
+                <p class="text-2xl font-bold text-green-600">₹{{ total_income }}</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                <h3 class="text-gray-500 text-sm">Balance</h3>
+                <p class="text-2xl font-bold {% if balance >= 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                    ₹{{ balance }}
+                </p>
+            </div>
+
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-10">
+            <!-- EXPENSE TABLE -->
+        <div class="bg-white p-6 rounded-xl shadow-md w-full md:w-1/2">
+
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-red-600">Expense Table</h2>
+
+                <a href="{% url 'mysaving:mysaving_expense' %}?month={{ selected_month }}&year={{ selected_year }}"
+                   class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow">
+                    + Add Expense
+                </a>
+            </div>
+
+            <table class="w-full border border-gray-300">
+                <thead class="bg-red-100">
+                    <tr>
+                        <th class="border px-4 py-2">Date</th>
+                        <th class="border px-4 py-2">Amount (₹)</th>
+                        <th class="border px-4 py-2">Description</th>
+                        <th class="border px-4 py-2">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for e in expense %}
+                    <tr class="text-center hover:bg-red-50">
+                        <td class="border px-4 py-2">{{ e.exp_date|date:"d/m/Y" }}</td>
+                        <td class="border px-4 py-2 text-red-600 font-semibold">₹{{ e.exp_amount }}</td>
+                        <td class="border px-4 py-2">{{ e.exp_desc }}</td>
+                        <td class="border px-4 py-2">
+                            <a href="{% url 'mysaving:expenseView' e.id %}"
+                               class="text-blue-600 hover:underline font-semibold">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="border px-4 py-2 text-gray-500">
+                            No expenses added
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- INCOME TABLE -->
+        <div class="bg-white p-6 rounded-xl shadow-md w-full md:w-1/2">
+
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-green-600">Income Table</h2>
+
+                <a href="{% url 'mysaving:mysaving_income' %}?month={{ selected_month }}&year={{ selected_year }}"
+                   class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow">
+                    + Add Income
+                </a>
+            </div>
+
+            <table class="w-full border border-gray-300">
+                <thead class="bg-green-100">
+                    <tr>
+                        <th class="border px-4 py-2">Date</th>
+                        <th class="border px-4 py-2">Amount (₹)</th>
+                        <th class="border px-4 py-2">Description</th>
+                        <th class="border px-4 py-2">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for i in income %}
+                    <tr class="text-center hover:bg-green-50">
+                        <td class="border px-4 py-2">{{ i.inc_date|date:"d/m/Y" }}</td>
+                        <td class="border px-4 py-2 text-green-600 font-semibold">₹{{ i.inc_amount }}</td>
+                        <td class="border px-4 py-2">{{ i.inc_desc }}</td>
+                        <td class="border px-4 py-2">
+                            <a href="{% url 'mysaving:incomeView' i.id %}"
+                               class="text-blue-600 hover:underline font-semibold">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="border px-4 py-2 text-gray-500">
+                            No income added
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="flex w-[100%] justify-around h-[25px] items-center bg-blue-200">
+            <div class="">
+                <a href="{% url 'tracker:tracker_home' %}">Tracker</a>
+            </div>
+            <div class="">
+                <a href="{% url 'dad:dad_home' %}">Extra Money</a>
+            </div>
+            <div class="">
+                <a href="{% url 'mysaving:mysaving_home' %}">My Saving</a>
+            </div>
+            
+        </div>
+    </footer>
+
+</body>
+</html>

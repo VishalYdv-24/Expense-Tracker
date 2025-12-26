@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Add Income</title>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+    <div class="bg-white w-full max-w-md p-8 rounded-xl shadow-md">
+
+        <h1 class="text-2xl font-bold text-green-600 mb-6 text-center">
+            Add Income
+        </h1>
+
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+
+            <!-- DESCRIPTION -->
+            <div class="flex items-center gap-4">
+                <label class="w-28 text-sm font-medium text-gray-700">
+                    Description : 
+                </label>
+                <div class="flex-1 bg-orange-100 rounded-lg px-1">
+                    {{ form.inc_desc }}
+                </div>
+            </div>
+
+            <!-- AMOUNT -->
+            <div class="flex items-center gap-4">
+                <label class="w-28 text-sm font-medium text-gray-700">
+                    Amount (₹) :
+                </label>
+                <div class="flex-1 bg-orange-100 rounded-lg px-1">
+                    {{ form.inc_amount }}
+                </div>
+            </div>
+
+            <!-- DATE -->
+            <div class="flex items-center gap-4">
+                <label class="w-28 text-sm font-medium text-gray-700">
+                    Date :
+                </label>
+                <div class="flex-1 bg-orange-100 rounded-lg px-1">
+                    {{ form.inc_date }}
+                </div>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="flex justify-between items-center mt-6">
+                <a href="{% url 'dad:dad_home' %}"
+                   class="text-gray-600 hover:underline">
+                    ← Back
+                </a>
+
+                <button type="submit"
+                        class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold shadow">
+                    Add Income
+                </button>
+            </div>
+        </form>
+
+    </div>
+
+</body>
+</html>
